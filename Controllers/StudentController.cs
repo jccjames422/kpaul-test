@@ -1,4 +1,7 @@
-﻿using System;
+﻿using InternTest.Models;
+using InternTest.Utilities;
+using InternTest.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -11,7 +14,7 @@ namespace InternTest.Controllers
         // GET: Student
         public ActionResult Index()
         {
-            return View();
+            return View(new StudentViewModel());
         }
 
         // GET: Student/Details/5
@@ -28,17 +31,27 @@ namespace InternTest.Controllers
 
         // POST: Student/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        [ValidateAntiForgeryToken]
+        [HandleError]
+        public ActionResult Create(StudentModel student)
         {
             try
             {
-                // TODO: Add insert logic here
+                if (ModelState.IsValid)
+                {
+                    student.Id = FauxStudentDb.Id++;
+                    FauxStudentDb.students.Add(student);
+                    TempData["message"] = $"{student.FirstName} {student.LastName} has been saved.";
+                    ModelState.Clear();
+                    return JavaScript("location.reload(true)");
+                }
 
-                return RedirectToAction("Index");
+                return PartialView("_AddNewStudentModal", student);
             }
             catch
             {
-                return View();
+                ViewBag.Message = "There was an error with your request.";
+                return PartialView("_AddNewStudentModal");
             }
         }
 
@@ -64,25 +77,22 @@ namespace InternTest.Controllers
             }
         }
 
-        // GET: Student/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
         // POST: Student/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public string Delete(int id)
         {
             try
             {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
+                StudentModel student = FauxStudentDb.students.Where(s => s.Id == id).First();
+                if (FauxStudentDb.students.Remove(student))
+                {
+                    return "The student has been deleted.";
+                };
+                return "The student has not been deleted";
             }
             catch
             {
-                return View();
+                return "There has been an error.";
             }
         }
     }
