@@ -9,16 +9,18 @@ namespace InternTest.Utilities
     public static class FauxStudentDb
     {
         public static List<StudentModel> students = new List<StudentModel>();
+        public static int Id { get; set; }
 
         static FauxStudentDb()
         {
-            students.Add(new StudentModel("Sam", "Hill", "Math", 19));
-            students.Add(new StudentModel("Jessica", "Hill", "Chemistry", 20));
-            students.Add(new StudentModel("Doug", "Lin", "Math", 20));
-            students.Add(new StudentModel("Meridith", "Butcher", "Computer Science", 29));
-            students.Add(new StudentModel("Bob", "Best", "Chemistry", 19));
-            students.Add(new StudentModel("Linda", "Samson", "English", 21));
-            students.Add(new StudentModel("Sam", "Hill", "Math", 19));
+            Id = 1;
+            students.Add(new StudentModel(Id++, "Sam", "Hill", "Math", 19));
+            students.Add(new StudentModel(Id++, "Jessica", "Hill", "Chemistry", 20));
+            students.Add(new StudentModel(Id++, "Doug", "Lin", "Math", 20));
+            students.Add(new StudentModel(Id++, "Meridith", "Butcher", "Computer Science", 29));
+            students.Add(new StudentModel(Id++, "Bob", "Best", "Chemistry", 19));
+            students.Add(new StudentModel(Id++, "Linda", "Samson", "English", 21));
+            students.Add(new StudentModel(Id++, "Sam", "Hill", "Math", 19));
         }
     }
 }

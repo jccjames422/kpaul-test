@@ -1,0 +1,152 @@
+﻿@model InternTest.ViewModels.StudentViewModel
+@{
+    ViewBag.Title = "Student Page";
+}
+
+<style>
+    .pager-nav {
+        margin: 16px 0;
+    }
+
+    .pager-nav span {
+        display: inline-block;
+        padding: 4px 8px;
+        margin: 1px;
+        cursor: pointer;
+        font-size: 14px;
+        font-size: 14px;
+        background-color: #FFFFFF;
+        border: 1px solid #e1e1e1;
+        border-radius: 3px;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    }
+
+    .pager-nav span:hover,
+    .pager-nav .pg-selected {
+        background-color: lightseagreen;
+        border: 1px solid #CCCCCC;
+        color: white;
+    }
+</style>
+
+@if (TempData["message"] != null)
+{
+    <div class="alert alert-success alert-dismissible show" role="alert" style="margin-top:2em;">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <p>@TempData["message"].ToString()</p>
+    </div>
+}
+
+<div class="row">
+    <div class="col-xs-4">
+        <h2>All Students</h2>
+    </div>
+    <div class="col-xs-2 col-xs-offset-6 text-right">
+        <button class="btn btn-primary"
+                style="margin-top: 1.5em;"
+                type="button" data-toggle="modal" data-target="#addNewStudentModal">
+            Add Student
+        </button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <table id="pager" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>
+                        First Name
+                    </th>
+                    <th>
+                        Last Name
+                    </th>
+                    <th>
+                        Feild
+                    </th>
+                    <th>
+                        Age
+                    </th>
+                    <th>
+
+                    </th>
+                </tr>
+            </thead>
+
+            @foreach (var student in Model.students)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => student.FirstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => student.LastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => student.Field)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => student.Age)
+                    </td>
+                    <td>
+                        <a style="text-decoration: none; color: red;" onclick="deleteStudent(`@student.Id`)">DELETE</a>
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+</div>
+
+@Html.Partial("_StudentDeletedModal")
+@Html.Partial("_AddNewStudentModal", Model.newStudent)
+
+<script type="text/javascript">
+    function deleteStudent(id) {
+        $.ajax({
+            type: 'POST',
+            url: '/Student/Delete',
+            data: JSON.stringify({ id: id }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "html",
+            success: function (response) {
+                $("#studentDeletedModal").find(".modal-body").html(response);
+                $("#studentDeletedModal").modal('show');
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    }
+
+    function addStudent(firstName, lastName, field, age) {
+        $.ajax({
+            type: 'POST',
+            url: '/Student/Create',
+            data: JSON.stringify(
+                {
+                    firstName,
+                    lastName,
+                    field,
+                    age
+                }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                window.location.href = "/Student/Index"
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    }
+
+</script>

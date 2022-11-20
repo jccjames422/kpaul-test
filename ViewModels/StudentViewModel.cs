@@ -1,4 +1,5 @@
 ﻿using InternTest.Models;
+using InternTest.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,20 +9,13 @@ namespace InternTest.ViewModels
 {
     public class StudentViewModel
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Field { get; set; }
-        public int Age { get; set; }
+        public List<StudentModel> students;
+        public StudentModel newStudent;
 
-
-        public StudentViewModel() { }
-
-        public StudentViewModel(StudentModel student)
+        public StudentViewModel()
         {
-            this.FirstName = student.FirstName;
-            this.LastName = student.LastName;
-            this.Field = student.Field;
-            this.Age = student.Age;
+            students = FauxStudentDb.students;
+            newStudent = new StudentModel();
         }
     }
 }
