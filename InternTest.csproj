@@ -171,6 +171,7 @@
     <Content Include="Views\Student\Index.cshtml" />
     <Content Include="Views\Shared\_AddNewStudentModal.cshtml" />
     <Content Include="Views\Shared\_StudentDeletedModal.cshtml" />
+    <Content Include="Views\Shared\_EditStudentModal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

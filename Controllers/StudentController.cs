@@ -41,7 +41,7 @@ namespace InternTest.Controllers
                 {
                     student.Id = FauxStudentDb.Id++;
                     FauxStudentDb.students.Add(student);
-                    TempData["message"] = $"{student.FirstName} {student.LastName} has been saved.";
+                    TempData["message"] = $"{student.FirstName} {student.LastName} has been created.";
                     ModelState.Clear();
                     return JavaScript("location.reload(true)");
                 }
@@ -56,24 +56,29 @@ namespace InternTest.Controllers
         }
 
         // GET: Student/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(StudentModel student)
         {
-            return View();
+            return View(student);
         }
 
-        // POST: Student/Edit/5
+        // POST: Student/Update/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Update(StudentModel student)
         {
             try
             {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
+                FauxStudentDb.students.Remove(student);
+                FauxStudentDb.students.Add(student);
+                FauxStudentDb.students = FauxStudentDb.students.OrderBy(s => s.Id).ToList();
+                TempData["message"] = $"{student.FirstName} {student.LastName} has been saved.";
+                ModelState.Clear();
+                return JavaScript("location.reload(true)");
             }
             catch
             {
-                return View();
+                TempData["message"] = $"There was an error when trying to save the updates for {student.FirstName} {student.LastName}";
+                ModelState.Clear();
+                return JavaScript("location.reload(true)");
             }
         }
 
@@ -86,7 +91,7 @@ namespace InternTest.Controllers
                 StudentModel student = FauxStudentDb.students.Where(s => s.Id == id).First();
                 if (FauxStudentDb.students.Remove(student))
                 {
-                    return "The student has been deleted.";
+                    return $"{student.FirstName} {student.LastName} has been deleted.";
                 };
                 return "The student has not been deleted";
             }

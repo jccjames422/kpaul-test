@@ -8,26 +8,34 @@
         margin: 16px 0;
     }
 
-    .pager-nav span {
-        display: inline-block;
-        padding: 4px 8px;
-        margin: 1px;
-        cursor: pointer;
-        font-size: 14px;
-        font-size: 14px;
-        background-color: #FFFFFF;
-        border: 1px solid #e1e1e1;
-        border-radius: 3px;
-        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-    }
+        .pager-nav span {
+            display: inline-block;
+            padding: 4px 8px;
+            margin: 1px;
+            cursor: pointer;
+            font-size: 14px;
+            font-size: 14px;
+            background-color: #FFFFFF;
+            border: 1px solid #e1e1e1;
+            border-radius: 3px;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+        }
 
-    .pager-nav span:hover,
-    .pager-nav .pg-selected {
-        background-color: lightseagreen;
-        border: 1px solid #CCCCCC;
-        color: white;
-    }
+            .pager-nav span:hover,
+            .pager-nav .pg-selected {
+                background-color: lightseagreen;
+                border: 1px solid #CCCCCC;
+                color: white;
+            }
 </style>
+
+@Html.Partial("_StudentDeletedModal")
+@Html.Partial("_AddNewStudentModal", Model.newStudent)
+
+@foreach(var student in Model.students)
+{
+    @Html.Partial("_EditStudentModal", student)
+}
 
 @if (TempData["message"] != null)
 {
@@ -91,7 +99,8 @@
                         @Html.DisplayFor(modelItem => student.Age)
                     </td>
                     <td>
-                        <a style="text-decoration: none; color: red;" onclick="deleteStudent(`@student.Id`)">DELETE</a>
+                        <a style="text-decoration: none; color: red;" onclick="deleteStudent(`@student.Id`)">DELETE</a> |
+                        <a style="text-decoration: none;" href="#" data-toggle="modal" data-target="#editStudentModal_@student.Id"> EDIT</a>
                     </td>
                 </tr>
             }
@@ -100,15 +109,12 @@
     </div>
 </div>
 
-@Html.Partial("_StudentDeletedModal")
-@Html.Partial("_AddNewStudentModal", Model.newStudent)
-
 <script type="text/javascript">
     function deleteStudent(id) {
         $.ajax({
             type: 'POST',
             url: '/Student/Delete',
-            data: JSON.stringify({ id: id }),
+            data: JSON.stringify({ id }),
             contentType: "application/json; charset=utf-8",
             dataType: "html",
             success: function (response) {
@@ -123,30 +129,4 @@
             }
         });
     }
-
-    function addStudent(firstName, lastName, field, age) {
-        $.ajax({
-            type: 'POST',
-            url: '/Student/Create',
-            data: JSON.stringify(
-                {
-                    firstName,
-                    lastName,
-                    field,
-                    age
-                }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                window.location.href = "/Student/Index"
-            },
-            failure: function (response) {
-                alert(response.responseText);
-            },
-            error: function (response) {
-                alert(response.responseText);
-            }
-        });
-    }
-
 </script>
