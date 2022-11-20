@@ -29,11 +29,11 @@
             }
 </style>
 
-@Html.Partial("_StudentDeletedModal")
 @Html.Partial("_AddNewStudentModal", Model.newStudent)
 
-@foreach(var student in Model.students)
+@foreach (var student in Model.students)
 {
+    @Html.Partial("_DeleteStudentModal", student)
     @Html.Partial("_EditStudentModal", student)
 }
 
@@ -44,6 +44,16 @@
             <span aria-hidden="true">&times;</span>
         </button>
         <p>@TempData["message"].ToString()</p>
+    </div>
+}
+
+@if (TempData["message-danger"] != null)
+{
+    <div class="alert alert-danger alert-dismissible show" role="alert" style="margin-top:2em;">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <p>@TempData["message-danger"].ToString()</p>
     </div>
 }
 
@@ -99,7 +109,7 @@
                         @Html.DisplayFor(modelItem => student.Age)
                     </td>
                     <td>
-                        <a style="text-decoration: none; color: red;" onclick="deleteStudent(`@student.Id`)">DELETE</a> |
+                        <a style="text-decoration: none; color: red;" data-toggle="modal" data-target="#deleteStudentModal_@student.Id">DELETE</a> |
                         <a style="text-decoration: none;" href="#" data-toggle="modal" data-target="#editStudentModal_@student.Id"> EDIT</a>
                     </td>
                 </tr>
@@ -109,25 +119,27 @@
     </div>
 </div>
 
-<script type="text/javascript">
-    document.querySelector("input[name = 'Age']").setAttribute('value', '');
-    function deleteStudent(id) {
-        $.ajax({
-            type: 'POST',
-            url: '/Student/Delete',
-            data: JSON.stringify({ id }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "html",
-            success: function (response) {
-                $("#studentDeletedModal").find(".modal-body").html(response);
-                $("#studentDeletedModal").modal('show');
-            },
-            failure: function (response) {
-                alert(response.responseText);
-            },
-            error: function (response) {
-                alert(response.responseText);
-            }
-        });
-    }
-</script>
+@section scripts {
+    <script>
+        document.querySelector("input[name = 'Age']").setAttribute('value', '');
+        function deleteStudent(id) {
+            $.ajax({
+                type: 'POST',
+                url: '/Student/Delete',
+                data: JSON.stringify({ id }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "html",
+                success: function (response) {
+                    $("#studentDeletedModal").find(".modal-body").html(response);
+                    $("#studentDeletedModal").modal('show');
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+    </script>
+}

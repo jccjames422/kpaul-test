@@ -82,22 +82,20 @@ namespace InternTest.Controllers
             }
         }
 
-        // POST: Student/Delete/5
-        [HttpPost]
-        public string Delete(int id)
+        // GET: Student/Delete/5
+        public ActionResult Delete(int id)
         {
             try
             {
                 StudentModel student = FauxStudentDb.students.Where(s => s.Id == id).First();
-                if (FauxStudentDb.students.Remove(student))
-                {
-                    return $"{student.FirstName} {student.LastName} has been deleted.";
-                };
-                return "The student has not been deleted";
+                FauxStudentDb.students.Remove(student);
+                TempData["message-danger"] = $"{student.FirstName} {student.LastName} has been deleted.";
+                return RedirectToAction("Index");
             }
             catch
             {
-                return "There has been an error.";
+                TempData["message-danger"] = "There was a problem deleting this student.";
+                return RedirectToAction("Index");
             }
         }
     }
