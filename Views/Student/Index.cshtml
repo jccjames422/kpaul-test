@@ -72,7 +72,7 @@
                         Last Name
                     </th>
                     <th>
-                        Feild
+                        Field
                     </th>
                     <th>
                         Age
@@ -110,6 +110,7 @@
 </div>
 
 <script type="text/javascript">
+    document.querySelector("input[name = 'Age']").setAttribute('value', '');
     function deleteStudent(id) {
         $.ajax({
             type: 'POST',
